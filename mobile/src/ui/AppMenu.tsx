@@ -89,7 +89,7 @@ function AboutDialog({ visible, onClose }: { visible: boolean; onClose: () => vo
           <ScrollView contentContainerStyle={styles.dialogContent}>
             <Image source={ICON} style={styles.icon} accessibilityIgnoresInvertColors />
             <Text style={[styles.appName, { color: t.text }]}>{appConfig.expo.name}</Text>
-            <Text style={[styles.version, { color: t.muted }]}>Version {appConfig.expo.version}</Text>
+            <Text style={[styles.version, { color: t.muted }]}>Version {appConfig.expo.version}. Dmitry Brant, 2026.</Text>
             <Text style={[styles.tagline, { color: t.text }]}>{ABOUT.tagline}</Text>
             {ABOUT.sections.map((paragraph, i) => (
               <Text key={i} style={[styles.paragraph, { color: t.muted }]}>
