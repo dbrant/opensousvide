@@ -3,11 +3,16 @@
 // disconnecting never affects cooking.
 
 import { ErrorState, ProgramStep, type CirculatorDataPoint } from './proto/base_pb';
-import { BleTransport, findJoule, prepareBluetooth } from './joule/ble';
-import { JouleClient, JouleResultError, isCooking, type LiveFeed } from './joule/client';
+import { JouleResultError, isCooking, type JouleClient, type LiveFeed } from './joule/client';
 import type { PairedJoule } from './settings';
 
 export type Connection = 'disconnected' | 'searching' | 'connecting' | 'connected';
+
+/**
+ * Finds the Joule and returns an open (not yet authenticated) client. Calls
+ * `onConnecting` once the Joule has been found.
+ */
+export type OpenClient = (joule: PairedJoule, appAddress: string, onConnecting: () => void) => Promise<JouleClient>;
 
 export interface SessionState {
   connection: Connection;
@@ -50,10 +55,14 @@ export class JouleSession {
   private feedTimer: ReturnType<typeof setTimeout> | undefined;
   private feedId: number | null = null;
   private setpoints = new Map<number, number | null>();
+  /** Commands in flight; `pause()` waits for these before disconnecting. */
+  private commands = new Set<Promise<unknown>>();
+  private pauseGeneration = 0;
 
   constructor(
     private readonly joule: PairedJoule,
     private readonly appAddress: string,
+    private readonly openClient: OpenClient,
   ) {}
 
   getState = (): SessionState => this.state;
@@ -71,16 +80,36 @@ export class JouleSession {
   /** Connect and stay connected (reconnecting as needed) until `pause()`. */
   resume(): void {
     this.wanted = true;
-    void this.connect();
+    if (this.client?.isConnected) {
+      // Came back before `pause()` finished disconnecting; keep the connection.
+      this.startFeed();
+    } else {
+      void this.connect();
+    }
   }
 
+  /**
+   * Let go of the Joule. Commands already sent are allowed to finish first, so
+   * leaving the app never interrupts one (for example, between the stop and
+   * start that make up a temperature change).
+   *
+   * This must not depend on timers: Android pauses JS timers while the app is
+   * in the background, but BLE callbacks still arrive.
+   */
   async pause(): Promise<void> {
     this.wanted = false;
+    const generation = ++this.pauseGeneration;
     clearTimeout(this.reconnectTimer);
     clearTimeout(this.feedTimer);
+    const feed = this.feed;
+    this.feed = null;
+    await feed?.stop();
+    while (this.commands.size > 0) {
+      await Promise.allSettled([...this.commands]);
+    }
+    if (this.wanted || generation !== this.pauseGeneration) return;
     const client = this.client;
     this.client = null;
-    this.feed = null;
     await client?.close();
     this.update({ connection: 'disconnected' });
   }
@@ -91,14 +120,21 @@ export class JouleSession {
   }
 
   async setTemperature(setpointC: number): Promise<void> {
-    await this.requireClient().setTemperature(setpointC);
+    await this.track(this.requireClient().setTemperature(setpointC));
     this.update({ cooking: true, setpointC, step: ProgramStep.PRE_HEAT });
     this.restartFeed(0);
   }
 
   async stop(): Promise<void> {
-    await this.requireClient().stop();
+    await this.track(this.requireClient().stop());
     this.update({ cooking: false, setpointC: null, step: null });
+  }
+
+  private track<T>(command: Promise<T>): Promise<T> {
+    this.commands.add(command);
+    const done = () => this.commands.delete(command);
+    command.then(done, done);
+    return command;
   }
 
   private requireClient(): JouleClient {
@@ -111,16 +147,9 @@ export class JouleSession {
     this.connecting = true;
     try {
       this.update({ connection: 'searching', error: null });
-      await prepareBluetooth();
-      const found = await findJoule(this.joule.circulatorAddress);
-      if (!found) {
-        throw new Error(`Couldn't find ${this.joule.name || 'your Joule'}. Make sure it's plugged in and nearby.`);
-      }
-      if (!this.wanted) return;
-
-      this.update({ connection: 'connecting' });
-      const client = new JouleClient(new BleTransport(found.id), this.joule.circulatorAddress, this.appAddress);
-      await client.open();
+      const client = await this.openClient(this.joule, this.appAddress, () =>
+        this.update({ connection: 'connecting' }),
+      );
       try {
         await client.authenticate(this.joule.secretKey);
       } catch (e) {
@@ -163,8 +192,9 @@ export class JouleSession {
 
   private restartFeed(delayMs: number): void {
     clearTimeout(this.feedTimer);
+    if (!this.wanted) return;
     this.feedTimer = setTimeout(() => {
-      if (!this.client?.isConnected) return;
+      if (!this.wanted || !this.client?.isConnected) return;
       const old = this.feed;
       this.feed = null;
       void (old ? old.stop() : Promise.resolve()).then(() => this.startFeed());
@@ -173,7 +203,7 @@ export class JouleSession {
 
   private startFeed(): void {
     const client = this.client;
-    if (!client?.isConnected || this.feed) return;
+    if (!this.wanted || !client?.isConnected || this.feed) return;
     const feed = client.liveFeed((p) => this.onPoint(client, p));
     this.feed = feed;
     feed.done.then(

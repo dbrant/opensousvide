@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, AppState, StyleSheet, View } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
+import { openBleClient } from './src/connect';
 import { JouleSession } from './src/session';
 import { loadSettings, saveSettings, type Settings } from './src/settings';
 import { ControlScreen } from './src/ui/ControlScreen';
@@ -27,7 +28,7 @@ export default function App() {
 
   const joule = settings?.joule ?? null;
   const session = useMemo(
-    () => (joule && settings ? new JouleSession(joule, settings.appAddress) : null),
+    () => (joule && settings ? new JouleSession(joule, settings.appAddress, openBleClient) : null),
     // A new session only when a different Joule is paired.
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [joule?.circulatorAddress, joule?.secretKey],

@@ -148,7 +148,9 @@ export class BleTransport implements Transport {
       BleManager.onDisconnectPeripheral((e) => {
         if (e.peripheral !== id) return;
         this.removeListeners();
-        if (!this.closed) onClose();
+        const wasOpen = !this.closed;
+        this.closed = true;
+        if (wasOpen) onClose();
       }),
       BleManager.onDidUpdateValueForCharacteristic((e) => {
         if (e.peripheral === id && e.characteristic.toLowerCase() === NOTIFY_CHAR_UUID) {
