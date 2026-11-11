@@ -5,6 +5,7 @@ import { ErrorState, ProgramStep } from '../proto/base_pb';
 import { MAX_SETPOINT_C, MIN_SETPOINT_C, cToF, fToC } from '../joule/protocol';
 import { errorMessage, type JouleSession, type SessionState } from '../session';
 import type { Unit } from '../settings';
+import { AppMenu } from './AppMenu';
 import { Button } from './components';
 import { useTheme, type Theme } from './theme';
 
@@ -163,6 +164,8 @@ export function ControlScreen({
           {name}
         </Text>
         <View style={[styles.dot, { backgroundColor: connected ? t.ok : t.border }]} />
+        <View style={styles.headerSpacer} />
+        <AppMenu />
       </View>
 
       <View style={styles.reading}>
@@ -228,6 +231,7 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   name: { fontSize: 20, fontWeight: '700', flexShrink: 1 },
   dot: { width: 10, height: 10, borderRadius: 5 },
+  headerSpacer: { flex: 1 },
   reading: { alignItems: 'center', paddingVertical: 12, gap: 6 },
   caption: { fontSize: 13, fontWeight: '600', letterSpacing: 1.2 },
   water: { fontSize: 64, fontWeight: '300', fontVariant: ['tabular-nums'] },

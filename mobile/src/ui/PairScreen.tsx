@@ -5,6 +5,7 @@ import { prepareBluetooth, scanForJoules, type FoundJoule, type ScanHandle } fro
 import { pairJoule } from '../pairing';
 import { errorMessage } from '../session';
 import type { PairedJoule } from '../settings';
+import { AppMenu } from './AppMenu';
 import { Button } from './components';
 import { useTheme } from './theme';
 
@@ -72,6 +73,9 @@ export function PairScreen({ appAddress, onPaired }: { appAddress: string; onPai
   const scanning = phase.kind === 'scanning';
   return (
     <View style={styles.container}>
+      <View style={styles.topBar}>
+        <AppMenu />
+      </View>
       <Text style={[styles.title, { color: t.text }]}>Connect your Joule</Text>
       <Text style={[styles.body, { color: t.muted }]}>
         Plug in your Joule and keep it close to your phone. You only need to pair once.
@@ -116,7 +120,8 @@ export function PairScreen({ appAddress, onPaired }: { appAddress: string; onPai
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 24, gap: 12 },
+  container: { flex: 1, padding: 24, paddingTop: 12, gap: 12 },
+  topBar: { flexDirection: 'row', justifyContent: 'flex-end' },
   center: { flex: 1, padding: 24, gap: 16, alignItems: 'center', justifyContent: 'center' },
   title: { fontSize: 26, fontWeight: '700', textAlign: 'center' },
   body: { fontSize: 16, lineHeight: 22, textAlign: 'center' },
