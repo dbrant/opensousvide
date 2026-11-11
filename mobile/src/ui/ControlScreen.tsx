@@ -44,6 +44,9 @@ function useRepeatPress(action: () => void) {
   useEffect(() => stop, []);
   return {
     onPressIn: () => {
+      // Pressable drops the deferred onPressOut of a very short tap when the
+      // next touch starts, so a previous repeat may still be running.
+      stop();
       action();
       const repeat = (delay: number) => {
         timer.current = setTimeout(() => {
