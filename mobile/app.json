@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "OpenSousVide",
+    "slug": "opensousvide",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.opensousvide.app"
+    },
+    "android": {
+      "package": "com.opensousvide.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": [
+      [
+        "react-native-ble-manager",
+        {
+          "neverForLocation": true,
+          "bluetoothAlwaysPermission": "OpenSousVide uses Bluetooth to control your Joule."
+        }
+      ],
+      "expo-secure-store"
+    ]
+  }
+}

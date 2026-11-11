@@ -1,0 +1,36 @@
+{
+  "name": "opensousvide",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "dependencies": {
+    "@bufbuild/protobuf": "^2.17.0",
+    "expo": "~58.0.23",
+    "expo-dev-client": "~58.0.18",
+    "expo-secure-store": "~58.0.2",
+    "expo-status-bar": "~58.0.4",
+    "expo-system-ui": "~58.0.7",
+    "react": "19.3.0",
+    "react-native": "0.88.1",
+    "react-native-ble-manager": "^13.0.0",
+    "react-native-safe-area-context": "~5.11.1"
+  },
+  "devDependencies": {
+    "@bufbuild/buf": "^1.75.0",
+    "@bufbuild/protoc-gen-es": "^2.17.0",
+    "@types/node": "^26.6.6",
+    "@types/react": "~19.3.0",
+    "eslint": "^9.0.0",
+    "eslint-config-expo": "~58.0.4",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.3"
+  },
+  "scripts": {
+    "start": "expo start",
+    "android": "expo run:android",
+    "test": "tsx --test src/**/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "expo lint",
+    "proto": "buf generate"
+  },
+  "private": true
+}
