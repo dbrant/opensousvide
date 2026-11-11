@@ -107,7 +107,7 @@ On a Joule with hardware version `JC`, firmware `175`, ESP firmware `v3.1.3`:
 ## Not yet verified on hardware
 
 - Pairing, starting, stopping and the live feed. These follow the official app's
-  code and pass against the simulated Joule in `tests/`.
+  code and pass against the simulated Joule in `python/tests/`.
 - What the live feed does when the Joule is idle (no reply, an error result, or
   data points with `programStep` `UNKNOWN`). The client handles all three.
 - Whether `stopCirculatorRequest` when idle returns success or an error. The
