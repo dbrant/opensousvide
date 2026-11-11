@@ -32,7 +32,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "expo lint",
     "proto": "buf generate",
-    "icons": "node scripts/make-icons.mjs"
+    "icons": "node scripts/make-icons.mjs",
+    "stop-metro": "node scripts/stop-metro.mjs"
   },
   "private": true
 }
