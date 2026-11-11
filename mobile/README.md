@@ -56,6 +56,40 @@ cmake.dir=C:/android/cmake/4.0.2
 `npx expo prebuild --clean` deletes `android/`, so you'll need to recreate
 this file afterwards.
 
+## Debugging in VS Code
+
+Install Microsoft's **React Native Tools** extension
+(`msjsdiag.vscode-react-native`). The repo's `.vscode/` folder already holds
+the configuration:
+
+- `settings.json` sets `react-native-tools.projectRoot` to `./mobile`, because
+  the app lives in a subfolder.
+- `launch.json` has **Attach to OpenSousVide (Hermes)**. It uses the
+  `reactnativedirect` debugger type, which is the one that works with the Hermes
+  JavaScript engine. The older `reactnative` type doesn't work with this app.
+
+To debug:
+
+1. Open the repo root in VS Code. In a terminal, run `cd mobile`, then
+   `npx expo start --dev-client`.
+2. Press `a` in that terminal. Expo opens the app on the connected phone and
+   sets up USB port forwarding.
+3. Press F5 with **Attach to OpenSousVide (Hermes)** selected. Breakpoints in
+   `App.tsx` and `src/` then stop the app.
+
+Notes:
+
+- The configuration attaches to Metro on port 8081. If Metro runs on another
+  port, change `port` in `launch.json` to match.
+- Make sure `adb` is on your `PATH` (the `platform-tools` folder of the Android
+  SDK).
+- The extension writes generated files to `.vscode/.react/`, which is
+  gitignored.
+- Without VS Code, press `j` in the Metro terminal to open React Native DevTools,
+  which has a console, breakpoints, network inspector and component inspector.
+  If VS Code fails to attach, close DevTools first, in case only one debugger
+  can be connected at a time.
+
 ## Signed release APK
 
 Release builds are signed with your own key. `plugins/withReleaseSigning.js`
