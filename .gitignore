@@ -3,4 +3,5 @@ __pycache__/
 *.egg-info/
 build/
 dist/
-.claude/settings.local.json
+**/.claude/settings.local.json
+.vscode/.react/
