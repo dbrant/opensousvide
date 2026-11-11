@@ -17,6 +17,7 @@
   "devDependencies": {
     "@bufbuild/buf": "^1.75.0",
     "@bufbuild/protoc-gen-es": "^2.17.0",
+    "@resvg/resvg-js": "^2.6.2",
     "@types/node": "^26.6.6",
     "@types/react": "~19.3.0",
     "eslint": "^9.0.0",
@@ -30,7 +31,8 @@
     "test": "tsx --test src/**/*.test.ts",
     "typecheck": "tsc --noEmit",
     "lint": "expo lint",
-    "proto": "buf generate"
+    "proto": "buf generate",
+    "icons": "node scripts/make-icons.mjs"
   },
   "private": true
 }

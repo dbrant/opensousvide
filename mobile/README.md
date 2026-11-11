@@ -50,6 +50,41 @@ cmake.dir=C:/android/cmake/4.0.2
 `npx expo prebuild --clean` deletes `android/`, so you'll need to recreate
 this file afterwards.
 
+## Signed release APK
+
+Release builds are signed with your own key. `plugins/withReleaseSigning.js`
+reads it from these Gradle properties, normally in
+`%USERPROFILE%\.gradle\gradle.properties` (or `~/.gradle/gradle.properties`)
+so the passwords stay out of the repo:
+
+```properties
+OPENSOUSVIDE_UPLOAD_STORE_FILE=C:/path/to/your.keystore
+OPENSOUSVIDE_UPLOAD_STORE_PASSWORD=...
+OPENSOUSVIDE_UPLOAD_KEY_ALIAS=...
+OPENSOUSVIDE_UPLOAD_KEY_PASSWORD=...
+```
+
+Use forward slashes in the path. If these are missing, the release build fails
+at the signing step. It never falls back to the public debug key.
+
+To build, run this from `mobile/android` (after `npx expo prebuild --platform android` if `android/` is missing):
+
+```sh
+./gradlew app:assembleRelease -PreactNativeArchitectures=armeabi-v7a,arm64-v8a
+```
+
+The APK is written to `android/app/build/outputs/apk/release/app-release.apk`.
+It contains the JavaScript bundle, so it runs without Metro. Install it with
+`adb install`, or copy it to a phone that allows installing unknown apps.
+
+- **Keep the key.** Every update has to be signed with the same key. If the key
+  changes, people must uninstall the app (losing their pairing) before they can
+  install the new version.
+- **Bump the version.** Raise `android.versionCode` in `app.json` for each APK
+  you hand out, or Android will refuse to install it over an older one.
+- **Remove the development build first.** A phone that has it installed can't
+  install the release APK over it, because they're signed with different keys.
+
 ## Checks
 
 ```sh

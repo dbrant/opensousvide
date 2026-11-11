@@ -12,8 +12,9 @@
     },
     "android": {
       "package": "com.opensousvide.app",
+      "versionCode": 1,
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#155A70",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -28,7 +29,8 @@
           "bluetoothAlwaysPermission": "OpenSousVide uses Bluetooth to control your Joule."
         }
       ],
-      "expo-secure-store"
+      "expo-secure-store",
+      "./plugins/withReleaseSigning"
     ]
   }
 }
