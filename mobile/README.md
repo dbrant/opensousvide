@@ -5,8 +5,8 @@ pair once, pick a temperature, start, and stop. The Joule holds the
 temperature on its own, so the app only needs to be open to change settings or
 watch the water temperature.
 
-(This is an unofficial app, not affiliated with ChefSteps or Breville. The code in
-this repository is provided as-is, with no warranty, etc.)
+(This is an unofficial app, not affiliated with, endorsed by, or sponsored by ChefSteps or Breville. The code in
+this repository is provided as-is, with no warranty, etc. All trademarks belong to their respective owners.)
 
 For your Android device, [download and install the APK](../release/opensousvide.apk)
 (or build and install from source).

@@ -4,8 +4,8 @@ Open-source unofficial app for controlling a ChefSteps Joule sous vide directly 
 Bluetooth, without the official app, without any kind of account, and without
 internet access.
 
-(Not affiliated with ChefSteps or Breville. The code in this repository is
-provided as-is, with no warranty, etc.)
+(Not affiliated with, endorsed by, or sponsored by ChefSteps or Breville. The code in this repository is
+provided as-is, with no warranty, etc. All trademarks belong to their respective owners.)
 
 ![screenshot](./docs/screenshot1_small.png "OpenSousVide")
 
