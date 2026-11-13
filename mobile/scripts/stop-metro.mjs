@@ -46,7 +46,9 @@ function listNodeProcesses() {
 
 function isProjectMetro(commandLine) {
   const cmd = normalize(commandLine);
-  if (!cmd.includes(expoCli) || !cmd.includes('/expo/bin/cli') || !/\sstart(\s|$)/.test(cmd)) return false;
+  // npx runs the CLI directly on Windows, but through the .bin/expo symlink on macOS and Linux.
+  const isExpoCli = cmd.includes(`${expoCli}expo/bin/cli`) || cmd.includes(`${expoCli}.bin/expo `);
+  if (!isExpoCli || !/\sstart(\s|$)/.test(cmd)) return false;
   if (port === undefined) return true;
   const match = cmd.match(/--port[=\s]+(\d+)/);
   return (match ? match[1] : '8081') === port;
