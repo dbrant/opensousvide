@@ -9,7 +9,7 @@ provided as-is, with no warranty, etc. All trademarks belong to their respective
 
 ![screenshot](./docs/screenshot1_small.png "OpenSousVide")
 
-For your Android device, [download and install the APK](../release/opensousvide.apk)
+For your Android device, [download and install the APK](./release/opensousvide.apk)
 (or build and install from source).
 
 For your iOS device, I have not yet published the app on the App Store, so you

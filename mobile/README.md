@@ -14,6 +14,8 @@ For your Android device, [download and install the APK](../release/opensousvide.
 For your iOS device, I have not yet published the app on the App Store, so you
 will need to build and deploy it yourself, for now. 
 
+![screenshot](../docs/screenshot1_small.png "OpenSousVide")
+
 ## Requirements
 
 - Node.js 20+
